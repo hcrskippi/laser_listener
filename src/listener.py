@@ -10,7 +10,7 @@ from sensor_msgs.msg import LaserScan
 def detectSteps(data):
 
     # Create publisher
-    pub = rospy.Publisher('maths', Float32)
+    pub = rospy.Publisher('step_detect', Float32)
 
     # Height of step (metres)
     STEP_THRESH = 0.05;

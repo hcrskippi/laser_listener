@@ -81,8 +81,7 @@ def detectSteps(data):
         # If no step has been detected within the valid range of input samples,
         # output MAX_DISTANCE
         elif i == final_index-1:
-            pub.publish(Float32(MAX_DISTANCE))
-            
+            pub.publish(Float32(MAX_DISTANCE))       
 
 def main():
     rospy.init_node('listener', anonymous=True)
