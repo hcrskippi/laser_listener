@@ -1,0 +1,19 @@
+<package>
+  <description brief="laser_listener">
+
+     laser_listener
+
+  </description>
+  <author>human</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/laser_listener</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="hokuyo_node"/>
+
+</package>
+
+
