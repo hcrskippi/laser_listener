@@ -19,7 +19,7 @@ def detectSteps(data):
     LOOK_AHEAD = 0.05;
     
     # Distance value to output if no step is detected
-    MAX_DISTANCE = 5
+    MAX_DISTANCE = 5000000
 
     # Number of samples in input frame
     no_samples = len(data.ranges);
