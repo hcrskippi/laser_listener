@@ -3,14 +3,17 @@
 import roslib; roslib.load_manifest('laser_listener')
 import rospy
 import math
+import sys
 
 from std_msgs.msg import *
 from sensor_msgs.msg import LaserScan
 
-def detectSteps(data):
+pub = None
 
+def detectSteps(data):
+    global pub
     # Create publisher
-    pub = rospy.Publisher('laser_step_detect', Float32)
+    #pub = rospy.Publisher(publisherTopic, Float32)
 
     # Height of step (metres)
     STEP_THRESH = 0.06;
@@ -81,11 +84,18 @@ def detectSteps(data):
         elif i == final_index-1:
             pub.publish(Float32(MAX_DISTANCE))       
 
-def main():
-    rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber("scan", LaserScan, detectSteps)
+def main(nodeName, hokuyoTopicToListenTo, topicToPublish):
+    pub = rospy.Publisher(topicToPublish, Float32)
+    rospy.init_node(nodeName, anonymous=False)
+    rospy.Subscriber(hokuyoTopicToListenTo, LaserScan, detectSteps)
     rospy.spin()
 
 if __name__ == '__main__':
-    main()
+    print (sys.argv)
+#    if len(sys.argv) >= 4:
+#	rospy.loginfo("Please add nodeName, topic to listen to and topic to publish to as program arguments") 
+#	sys.exit()
+#    else:
+    print "%s,%s,%s"%(str((sys.argv[1])),str((sys.argv[2])),str((sys.argv[3])))
+    main(str((sys.argv[1])), str((sys.argv[2])), str((sys.argv[3])))
 
