@@ -14,7 +14,7 @@ def callBackFunction(data):
     detectSteps(pub,data)
 
 def main():
-    rospy.init_node('left_listener', anonymous=False)
+    rospy.init_node('right_listener', anonymous=False)
     rospy.Subscriber("kerbDetectRight", LaserScan, callBackFunction)
     rospy.spin()
 
