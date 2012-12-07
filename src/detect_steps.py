@@ -10,7 +10,7 @@ def detectSteps(pub, data):
     STEP_THRESH = 0.06;
 
     # Distance to look at beyond the detected step (metres)
-    LOOK_AHEAD = 0.05;
+    LOOK_AHEAD = 0.04;
 
     # Distance value to output if no step is detected
     MAX_DISTANCE = 5000000
@@ -19,8 +19,8 @@ def detectSteps(pub, data):
     no_samples = len(data.ranges);
 
     # Initialise height and distance lists to zero
-    height   = [0]*no_samples;
-    distance = [0]*no_samples
+    height   = [0.0]*no_samples;
+    distance = [0.0]*no_samples
 
     # Calculate vertical and horizontal projections of all input range values
     for i in range(no_samples):
@@ -36,8 +36,12 @@ def detectSteps(pub, data):
     # Loop over samples from furthest to closest measuring the difference
     # between the furthest and the current. Stop when the distance is greater
     # than LOOK_AHEAD, setting the final valid index for step detection.
+    last_valid_sample=1;
     for i in range(2,no_samples):
-        if distance[no_samples-1] - distance[no_samples-i] > LOOK_AHEAD and distance[no_samples-1] > 0 and distance[no_samples-i] > 0:
+	if distance[no_samples-(i-1)] > 0.1 and last_valid_sample == 1:
+	    last_valid_sample = no_samples-(i-1)
+
+        if distance[last_valid_sample] - distance[no_samples-i] > LOOK_AHEAD and last_valid_sample >1:
             final_index = no_samples-i;
             break;
 
@@ -45,8 +49,9 @@ def detectSteps(pub, data):
     for i in range(1,final_index):
 
         # Break out of loop if distance less than half of the laser height threshold
-        if height[i] < laser_height/2:
-            break;
+        if height[i] < laser_height/2.0:
+             pub.publish(Float32(MAX_DISTANCE-1))
+	     break;
 
         # Calculate the difference between consecutive samples
         #laser_diff = math.fabs(height[i] - height[i-1]);
@@ -60,8 +65,8 @@ def detectSteps(pub, data):
 
             # Loop over samples within LOOK_AHEAD metres of the detected step. Step detected only 
             # remains true if all samples within LOOK_AHEAD are above the step threshold
-            for j in range(i,no_samples-1):
-                if distance[j] - distance[i-1] < LOOK_AHEAD and height[j] < height[i-1] + STEP_THRESH:
+            for j in range(i,no_samples):
+                if distance[j] - distance[i-1] < LOOK_AHEAD and height[j] < height[i-1] + STEP_THRESH and distance[j]>0.1:
                     step = False;
 
             # Publish distance to step if still determined as valid
