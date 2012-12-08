@@ -24,11 +24,19 @@ def detectSteps(pub, data):
 
     # Calculate vertical and horizontal projections of all input range values
     for i in range(no_samples):
-        height[i]   = data.ranges[i]*math.cos(data.angle_increment*i);
-        distance[i] = data.ranges[i]*math.sin(data.angle_increment*i);
-
-    # Set the height of the laser from the ground as the first height sample (vertically downwards)
+        sample = data.ranges[i]
+        if sample < 0.01:
+            sample  = 100000000
+        height[i]   = sample*math.cos(data.angle_increment*i);
+        distance[i] = sample*math.sin(data.angle_increment*i);
+	
+    # Set the height of the laser from the ground as the first height sample (vertically downwards
     laser_height = height[0]
+
+ #   for i in range(1,no_samples):
+#	if height[i] < laser_height:
+#	    height[i]   = 10
+#	    distance[i] = 10
 
     # Initialise final index
     final_index = no_samples-1;
@@ -40,7 +48,6 @@ def detectSteps(pub, data):
     for i in range(2,no_samples):
 	if distance[no_samples-(i-1)] > 0.1 and last_valid_sample == 1:
 	    last_valid_sample = no_samples-(i-1)
-
         if distance[last_valid_sample] - distance[no_samples-i] > LOOK_AHEAD and last_valid_sample >1:
             final_index = no_samples-i;
             break;
